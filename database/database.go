@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -12,7 +13,11 @@ import (
 var DB *sql.DB
 
 func InitDB() {
-	connStr := "host=localhost port=5432 user=postgres password=099870 dbname=golangdb sslmode=disable"
+	connStr := os.Getenv("DATABASE_URL")
+	if connStr == "" {
+		log.Fatal("DATABASE_URL environment variable is not set")
+	}
+
 	var err error
 	DB, err = sql.Open("postgres", connStr)
 	if err != nil {
@@ -20,7 +25,7 @@ func InitDB() {
 	}
 	err = DB.Ping()
 	if err != nil {
-		log.Fatalf("annot reach the database: %v", err)
+		log.Fatalf("Cannot reach the database: %v", err)
 	}
 	log.Println("Database connection established successfully")
 }
