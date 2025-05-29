@@ -28,6 +28,18 @@ func InitDB() {
 		log.Fatalf("Cannot reach the database: %v", err)
 	}
 	log.Println("Database connection established successfully")
+
+	createTableQuery := `
+	CREATE TABLE IF NOT EXISTS "GameData" (
+		playerid TEXT PRIMARY KEY,
+		level INTEGER NOT NULL,
+		gold INTEGER NOT NULL
+	);
+	`
+	_, err = DB.Exec(createTableQuery)
+	if err != nil {
+		log.Fatalf("Failed to create table: %v", err)
+	}
 }
 
 func InsertGameData(data models.GameDataDB) error {
